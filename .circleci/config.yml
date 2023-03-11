@@ -224,7 +224,7 @@ jobs:
       - install-nodejs
       - add_ssh_keys:
           fingerprints: ["94:f3:40:c0:5b:2e:fd:99:ce:48:8a:c0:d5:2a:3d:90"]
-          
+
       - attach_workspace:
           at: ~/
       - run:
@@ -443,15 +443,15 @@ workflows:
       #    requires: [build-backend]
       #- scan-frontend:
       #    requires: [build-frontend]
-      - deploy-infrastructure:
+      #- deploy-infrastructure:
          # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          filters:
-            branches:
-              only: [master]
+      #    filters:
+      #      branches:
+      #        only: [master]
               
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      # - run-migrations:
+      #- configure-infrastructure:
+      #    requires: [deploy-infrastructure]
+       - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
       #     requires: [run-migrations]   
