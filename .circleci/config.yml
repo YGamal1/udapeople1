@@ -37,16 +37,16 @@ commands:
             sudo apt install -y software-properties-common 
             sudo add-apt-repository --yes --update ppa:ansible/ansible
             sudo apt install -y ansible 
+
   install-nodejs:
     description: Install Nodejs 13
     steps:
       - run:
           name: Install Nodejs 13
           command: |
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+            curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
             sudo apt install -y nodejs
-            sudo npm install --global n
-            sudo n 13.8.0
+          
             
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -107,7 +107,7 @@ jobs:
   
   test-frontend:
     docker:
-    - image: circleci/node:13.8.0
+    - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -121,7 +121,7 @@ jobs:
           
   test-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -135,7 +135,7 @@ jobs:
             
   scan-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -151,7 +151,7 @@ jobs:
 
   scan-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -167,13 +167,10 @@ jobs:
    
   deploy-infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: cimg/base:stable
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            yum install -y tar gzip   
+      - install-awscli  
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -219,9 +216,7 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - install-awscli
       - install-ansible
-      - install-nodejs
       - add_ssh_keys:
           fingerprints: ["94:f3:40:c0:5b:2e:fd:99:ce:48:8a:c0:d5:2a:3d:90"]
       - attach_workspace:
@@ -270,7 +265,7 @@ jobs:
       - install-awscli
       - install-nodejs
       - restore_cache:
-          keys: [backend-deps]
+          keys: [frontend-build]
       - run:
           name: Install dependencies
           command: |
@@ -307,18 +302,24 @@ jobs:
     
       - add_ssh_keys:
           fingerprints: ["94:f3:40:c0:5b:2e:fd:99:ce:48:8a:c0:d5:2a:3d:90"]
+      - attach_workspace:
+          at: ~/
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: install dependencies
+          command: |
+            cd backend
+            npm install
       - run:
           name: Deploy backend
           command: |
-            export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
-            echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
-            cd backend
-            npm i
-            npm run build
-            tar -czf artifact.tar.gz dist/* package*
-            cp artifact.tar.gz ~/project/.circleci/ansible/roles/deploy/artifact.tar.gz
-            ls ../.circleci/ansible/roles/deploy/
+            export TYPEORM_MIGRATIONS_DIR=./migrations
+            export TYPEORM_ENTITIES=./modules/domain/**/*.entity(.ts,.js)
+            export TYPEORM_MIGRATIONS=./migrations/*.ts
             cd ../.circleci/ansible
+            cat inventory.txt
+            
             ansible-playbook -i inventory.txt deploy-backend.yml
            
       - destroy-environment
