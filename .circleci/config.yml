@@ -44,8 +44,10 @@ commands:
       - run:
           name: Install Nodejs 13
           command: |
-            curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
             sudo apt install -y nodejs
+            sudo npm install --global n
+            sudo n 13.8.0
           
             
   revert-migrations:
@@ -183,7 +185,7 @@ jobs:
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=udapeople
-              
+      - destroy-environment        
       
       - run:
           name: Ensure front-end infrastructure exist
@@ -194,7 +196,7 @@ jobs:
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=udapeople
-              
+      - destroy-environment        
       
       - run:
           name: Add back-end ip to ansible inventory
