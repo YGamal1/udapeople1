@@ -23,7 +23,7 @@
       changed_when: false
 
 
-      - setup:
+    - setup:
 
   roles:
     - configure-server
