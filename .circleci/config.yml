@@ -184,7 +184,6 @@ jobs:
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=udapeople
               
-      - destroy-environment
       
       - run:
           name: Ensure front-end infrastructure exist
@@ -196,7 +195,6 @@ jobs:
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=udapeople
               
-      - destroy-environment
       
       - run:
           name: Add back-end ip to ansible inventory
