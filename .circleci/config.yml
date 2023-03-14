@@ -235,8 +235,7 @@ jobs:
             cd .circleci/ansible
             aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> inventory.txt
             cat inventory.txt
-            ansible-playbook -i inventory.txt configure-server.yml
-          
+            ansible-playbook -i inventory.txt prometheus-exporter.yml -vv
       - destroy-environment 
       
   run-migrations:
@@ -261,8 +260,7 @@ jobs:
               curl https://kvdb.io/YSTpz8endmcwDHVbNursb4/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       
-      - destroy-environment
-      - revert-migrations 
+      
       
   deploy-frontend:
     docker:
@@ -318,6 +316,7 @@ jobs:
             cd backend
             npm i
             npm run build
+            echo "TYPEORM_ENTITIES=./dist/modules/domain/**/*.entity{.ts,.js}" > .env
             echo "TYPEORM_HOST=${TYPEORM_HOST}" >> .env
             echo "TYPEORM_PORT=${TYPEORM_PORT}" >> .env
             echo "TYPEORM_USERNAME=${TYPEORM_USERNAME}" >> .env
