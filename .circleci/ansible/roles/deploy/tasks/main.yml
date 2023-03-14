@@ -18,14 +18,6 @@
     npm i
 
 - name: Start the app
-  shell: |
-    export TYPEORM_ENTITIES=./dist/modules/domain/**/*.entity{.ts,.js} 
-    export TYPEORM_HOST=localhost 
-    export TYPEORM_PORT=5432 
-    export TYPEORM_USERNAME=postgres
-    export TYPEORM_PASSWORD=postgres
-    export TYPEORM_DATABASE=glee 
-    export TYPEORM_MIGRATIONS_DIR=./dist/migrations 
-    export TYPEORM_MIGRATIONS=./dist/migrations/*.ts 
+  shell: | 
     pm2 stop default
     pm2 start -f /home/ubuntu/backend/dist/main.js
