@@ -16,9 +16,10 @@
   shell: |
     cd /home/ubuntu/backend
     npm i
+
 - name: Start the app
   shell: |
-    export TYPEORM_ENTITIES=./dist/modules/domain/**/*.entity{.ts,.js}" 
+    export TYPEORM_ENTITIES=./dist/modules/domain/**/*.entity{.ts,.js} 
     export TYPEORM_HOST=localhost 
     export TYPEORM_PORT=5432 
     export TYPEORM_USERNAME=postgres
