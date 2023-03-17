@@ -27,5 +27,5 @@
     - TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}" 
 
   roles:
-    - configure-server
+    # - configure-server
     - configure-prometheus-node-exporter
