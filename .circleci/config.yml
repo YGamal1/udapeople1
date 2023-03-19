@@ -51,7 +51,7 @@ commands:
           
             
   revert-migrations:
-    description: Revert the last migration if successfully run in the current workflow.
+    description: Revert the last migration 
     parameters:
       Workflow_ID:
         type: string
@@ -61,13 +61,13 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            # SUCCESS=$(curl --insecure  https://kvdb.io/YSTpz8endmcwDHVbNursb4/migration_${CIRCLE_WORKFLOW_ID:0:7}_<< parameters.Workflow_ID >>)
-            # if(( $SUCCESS==1 )); 
-            # then
-            cd ~/project/backend
-            npm install
-            npm run migration:revert
-            # fi
+            SUCCESS=$(curl --insecure  https://kvdb.io/YSTpz8endmcwDHVbNursb4/migration_${CIRCLE_WORKFLOW_ID:0:7}_<< parameters.Workflow_ID >>)
+            if(( $SUCCESS==1 )); 
+            then
+                cd ~/project/backend
+                npm install
+                npm run migration:down
+            fi
               
           
             
