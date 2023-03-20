@@ -62,7 +62,8 @@ commands:
           when: on_fail
           command: |
             # SUCCESS=$(curl --insecure  https://kvdb.io/YSTpz8endmcwDHVbNursb4/migration_${CIRCLE_WORKFLOW_ID:0:7}_<< parameters.Workflow_ID >>)
-            SUCCESS=$(curl --insecure  https://kvdb.io/YSTpz8endmcwDHVbNursb4/migration_<< parameters.Workflow_ID >>)
+            #SUCCESS=$(curl --insecure  https://kvdb.io/YSTpz8endmcwDHVbNursb4/migration_<< parameters.Workflow_ID >>)
+            SUCCESS = 1
             echo "$SUCCESS" 
             if (( $SUCCESS == 1 ));
             then
