@@ -66,6 +66,7 @@ commands:
             # echo "$SUCCESS" 
             # if (( $SUCCESS == 1 ));
             # then
+            
             cd ~/project/backend
             npm install
             npm run migrations:revert
