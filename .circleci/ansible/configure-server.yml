@@ -23,8 +23,8 @@
       changed_when: false
 
 
-  environment:
-    - TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}" 
+  # environment:
+  #   - TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}" 
 
   roles:
     - configure-server
