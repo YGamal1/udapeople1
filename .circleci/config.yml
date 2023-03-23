@@ -61,25 +61,25 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            # # SUCCESS=$(curl --insecure  https://kvdb.io/YSTpz8endmcwDHVbNursb4/migration_${CIRCLE_WORKFLOW_ID:0:7}_<< parameters.Workflow_ID >>)
-            # SUCCESS=$(curl --insecure  https://kvdb.io/YSTpz8endmcwDHVbNursb4/migration_<< parameters.Workflow_ID >>)
-            # echo "$SUCCESS" 
-            # if (( $SUCCESS == 1 ));
-            # then
-            export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
-            echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
-            echo "TYPEORM_ENTITIES=./dist/modules/domain/**/*.entity{.ts,.js}" > .env
-            echo "TYPEORM_HOST=${TYPEORM_HOST}" >> .env
-            echo "TYPEORM_PORT=${TYPEORM_PORT}" >> .env
-            echo "TYPEORM_USERNAME=${TYPEORM_USERNAME}" >> .env
-            echo "TYPEORM_PASSWORD=${TYPEORM_PASSWORD}" >> .env
-            echo "TYPEORM_DATABASE=${TYPEORM_DATABASE}" >> .env
-            echo "TYPEORM_MIGRATIONS_DIR=./dist/migrations" >> .env
-            echo "TYPEORM_MIGRATIONS=./dist/migrations/*.ts" >> .env
-            cd ~/project/backend
-            npm install
-            npm run migrations:revert
-            # fi
+            # SUCCESS=$(curl --insecure  https://kvdb.io/YSTpz8endmcwDHVbNursb4/migration_${CIRCLE_WORKFLOW_ID:0:7}_<< parameters.Workflow_ID >>)
+            SUCCESS=$(curl --insecure  https://kvdb.io/YSTpz8endmcwDHVbNursb4/migration_<< parameters.Workflow_ID >>)
+            echo "$SUCCESS" 
+            if (( $SUCCESS == 1 ));
+            then
+              # export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+              # echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
+              # echo "TYPEORM_ENTITIES=./dist/modules/domain/**/*.entity{.ts,.js}" > .env
+              # echo "TYPEORM_HOST=${TYPEORM_HOST}" >> .env
+              # echo "TYPEORM_PORT=${TYPEORM_PORT}" >> .env
+              # echo "TYPEORM_USERNAME=${TYPEORM_USERNAME}" >> .env
+              # echo "TYPEORM_PASSWORD=${TYPEORM_PASSWORD}" >> .env
+              # echo "TYPEORM_DATABASE=${TYPEORM_DATABASE}" >> .env
+              # echo "TYPEORM_MIGRATIONS_DIR=./dist/migrations" >> .env
+              # echo "TYPEORM_MIGRATIONS=./dist/migrations/*.ts" >> .env
+              cd ~/project/backend
+              npm install
+              npm run migrations:revert
+            fi
               
           
             
@@ -440,16 +440,16 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend
-      # - build-backend
-      # - test-frontend:
-      #    requires: [build-frontend]
-      # - test-backend:
-      #    requires: [build-backend]
-      # - scan-backend:
-      #    requires: [build-backend]
-      # - scan-frontend:
-      #    requires: [build-frontend]
+      - build-frontend
+      - build-backend
+      - test-frontend:
+         requires: [build-frontend]
+      - test-backend:
+         requires: [build-backend]
+      - scan-backend:
+         requires: [build-backend]
+      - scan-frontend:
+         requires: [build-frontend]
       - deploy-infrastructure:
         #  requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
